@@ -127,11 +127,6 @@
     }
     .set-check.done { background: var(--green); border-color: var(--green); color: #000; font-weight: 900; }
     .set-label { font-size: 0.85rem; font-weight: 700; flex: 1; }
-    .set-reps {
-      font-size: 0.78rem; font-weight: 600; color: var(--blue);
-      background: rgba(52,152,219,0.1); padding: 2px 8px; border-radius: 8px;
-      white-space: nowrap;
-    }
     .set-rir {
       font-size: 0.72rem; font-weight: 600; color: var(--yellow);
       background: rgba(241,196,15,0.1); padding: 2px 7px; border-radius: 8px;
@@ -149,36 +144,18 @@
       transition: border-color 0.2s;
     }
     .load-input:focus { outline: none; border-color: var(--accent); }
+    .reps-input {
+      width: 58px; padding: 5px 6px;
+      background: var(--surface2); border: 1px solid rgba(52,152,219,0.4);
+      border-radius: 7px; color: var(--blue);
+      font-size: 0.85rem; font-weight: 700; text-align: center;
+      transition: border-color 0.2s;
+    }
+    .reps-input:focus { outline: none; border-color: var(--blue); }
     .load-unit { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+    .reps-unit { font-size: 0.72rem; color: var(--blue); font-weight: 600; }
     .bw-label { font-size: 0.72rem; color: var(--purple); font-weight: 600; }
     .set-note { font-size: 0.72rem; color: var(--muted); flex: 1; font-style: italic; }
-    .rest-btn {
-      width: 30px; height: 30px; border-radius: 7px;
-      border: 1px solid var(--border); background: var(--surface2);
-      color: var(--muted); cursor: pointer; font-size: 0.8rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s; flex-shrink: 0;
-    }
-    .rest-btn:hover { border-color: var(--yellow); color: var(--yellow); }
-    .rest-btn.active { border-color: var(--yellow); color: var(--yellow); background: rgba(241,196,15,0.1); }
-
-    /* ── REST OVERLAY ── */
-    #restOverlay {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #16160e; border-top: 2px solid var(--yellow);
-      padding: 14px 20px; z-index: 200;
-      display: none; align-items: center; gap: 14px;
-    }
-    #restOverlay.active { display: flex; }
-    #restCountdown { font-size: 2rem; font-weight: 900; font-family: monospace; color: var(--yellow); min-width: 70px; }
-    .rest-info { flex: 1; }
-    .rest-info-label { font-size: 0.78rem; color: var(--muted); }
-    .rest-info-exercise { font-size: 0.85rem; font-weight: 600; }
-    .rest-skip {
-      padding: 9px 18px; border-radius: 8px; border: none;
-      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.85rem; cursor: pointer;
-    }
-    .rest-skip:hover { background: var(--accent2); }
 
     /* ── SAVE BAR ── */
     #saveBar {
@@ -236,6 +213,7 @@
       .set-top { gap: 7px; }
       .set-bottom { gap: 6px; }
       .load-input { width: 56px; font-size: 0.85rem; }
+      .reps-input { width: 50px; font-size: 0.82rem; }
     }
   </style>
 </head>
@@ -290,7 +268,7 @@
       <div class="cat-icon">🦵</div>
       <div>
         <div class="cat-title">Pernas / Zercher</div>
-        <div class="cat-sub">Zercher · Passada · Posterior Coxa · Pélvico (Hip Thrust)</div>
+        <div class="cat-sub">Zercher · Mesa Flexora · Posterior Coxa · Pélvico (Hip Thrust)</div>
       </div>
     </div>
     <div id="prog-legs" class="progress-wrap"></div>
@@ -305,16 +283,6 @@
     <div id="monContent"></div>
   </div>
 
-</div>
-
-<!-- REST OVERLAY -->
-<div id="restOverlay">
-  <div id="restCountdown">0:00</div>
-  <div class="rest-info">
-    <div class="rest-info-label">Descanso — próxima série:</div>
-    <div class="rest-info-exercise" id="restLabel">—</div>
-  </div>
-  <button class="rest-skip" onclick="skipRest()">Pular ⏭</button>
 </div>
 
 <!-- SAVE BAR -->
@@ -334,41 +302,41 @@ const PLAN = {
       {
         id: 'terra', name: 'Levantamento Terra', type: 'Principal',
         sets: [
-          { label: 'Aquecimento',   reps: '15',   load: 20,   rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 1',  reps: '6',    load: 30,   rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 2',  reps: '6',    load: 35,   rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 3',  reps: '6',    load: 45,   rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 4',  reps: '6',    load: 50,   rir: null, rest: 120, note: 'Longe da falha', bw: false },
-          { label: 'Trabalho 1/2',  reps: '6',    load: 50,   rir: 3,    rest: 180, note: 'Cada lado',      bw: false },
-          { label: 'Trabalho 2/2',  reps: '4',    load: 60,   rir: 3,    rest: 240, note: '',               bw: false },
-          { label: '1 Repetição',   reps: '1',    load: 85,   rir: null, rest: 300, note: '',               bw: false },
+          { label: 'Aquecimento',   reps: '15',   load: 20,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 1',  reps: '6',    load: 30,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 2',  reps: '6',    load: 35,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 3',  reps: '6',    load: 45,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 4',  reps: '6',    load: 50,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Trabalho 1/2',  reps: '6',    load: 50,   rir: 3,    note: 'Cada lado',      bw: false },
+          { label: 'Trabalho 2/2',  reps: '4',    load: 60,   rir: 3,    note: '',               bw: false },
+          { label: '1 Repetição',   reps: '1',    load: 85,   rir: null, note: '',               bw: false },
         ]
       },
       {
         id: 'remada', name: 'Remada Curvada', type: 'Auxiliar 1',
         sets: [
-          { label: 'Aquecimento 1', reps: '8–10', load: 15,   rir: null, rest: 60,  note: 'Longe da falha', bw: false },
-          { label: 'Aquecimento 2', reps: '8–10', load: 17.5, rir: null, rest: 60,  note: 'Longe da falha', bw: false },
-          { label: 'Trabalho 1',    reps: '8–10', load: 20,   rir: 2,    rest: 120, note: '',               bw: false },
-          { label: 'Trabalho 2',    reps: '8–10', load: 22.5, rir: 2,    rest: 120, note: '',               bw: false },
+          { label: 'Aquecimento 1', reps: '8–10', load: 15,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Aquecimento 2', reps: '8–10', load: 17.5, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Trabalho 1',    reps: '8–10', load: 20,   rir: 2,    note: '',               bw: false },
+          { label: 'Trabalho 2',    reps: '8–10', load: 22.5, rir: 2,    note: '',               bw: false },
         ]
       },
       {
         id: 'puxada', name: 'Puxada Supinada', type: 'Auxiliar 2',
         sets: [
-          { label: 'Série 1',       reps: '8–10', load: 61,   rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 2',       reps: '8',    load: 61,   rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Trabalho 1',    reps: '8–10', load: 68,   rir: 2,    rest: 120, note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '8',    load: 75,   rir: 2,    rest: 120, note: '', bw: false },
+          { label: 'Série 1',       reps: '8–10', load: 61,   rir: null, note: '', bw: false },
+          { label: 'Série 2',       reps: '8',    load: 61,   rir: null, note: '', bw: false },
+          { label: 'Trabalho 1',    reps: '8–10', load: 68,   rir: 2,    note: '', bw: false },
+          { label: 'Trabalho 2',    reps: '8',    load: 75,   rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'barrafixa', name: 'Barra Fixa Supinada', type: 'Auxiliar 3',
         sets: [
-          { label: 'Série 1',  reps: '8', load: 0, rir: null, rest: 90,  note: '', bw: true },
-          { label: 'Série 2',  reps: '6', load: 0, rir: null, rest: 150, note: '', bw: true },
-          { label: 'Série 3',  reps: '6', load: 0, rir: null, rest: 180, note: '', bw: true },
-          { label: 'Série 4',  reps: '5', load: 0, rir: null, rest: 180, note: '', bw: true },
+          { label: 'Série 1',  reps: '8', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 2',  reps: '6', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 3',  reps: '6', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 4',  reps: '5', load: 0, rir: null, note: '', bw: true },
         ]
       },
     ]
@@ -379,40 +347,40 @@ const PLAN = {
       {
         id: 'supino', name: 'Supino Reto', type: 'Principal',
         sets: [
-          { label: 'Aquecimento',   reps: '15',   load: 10,   rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 1',  reps: '6',    load: 20,   rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Progressão 2',  reps: '6',    load: 20,   rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Progressão 3',  reps: '6',    load: 22.5, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Progressão 4',  reps: '6',    load: 25,   rir: null, rest: 120, note: '', bw: false },
-          { label: 'Trabalho 1',    reps: '6',    load: 30,   rir: 3,    rest: 180, note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '5',    load: 30,   rir: 2,    rest: 180, note: '', bw: false },
+          { label: 'Aquecimento',   reps: '15',   load: 10,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 1',  reps: '6',    load: 20,   rir: null, note: '', bw: false },
+          { label: 'Progressão 2',  reps: '6',    load: 20,   rir: null, note: '', bw: false },
+          { label: 'Progressão 3',  reps: '6',    load: 22.5, rir: null, note: '', bw: false },
+          { label: 'Progressão 4',  reps: '6',    load: 25,   rir: null, note: '', bw: false },
+          { label: 'Trabalho 1',    reps: '6',    load: 30,   rir: 3,    note: '', bw: false },
+          { label: 'Trabalho 2',    reps: '5',    load: 30,   rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'supinoinc', name: 'Supino Inclinado Haltere', type: 'Auxiliar 1',
         sets: [
-          { label: 'Série 1',    reps: '8', load: 24, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 2',    reps: '8', load: 24, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Trabalho 1', reps: '8', load: 26, rir: 2,    rest: 120, note: '', bw: false },
-          { label: 'Trabalho 2', reps: '8', load: 26, rir: 2,    rest: 120, note: '', bw: false },
+          { label: 'Série 1',    reps: '8', load: 24, rir: null, note: '', bw: false },
+          { label: 'Série 2',    reps: '8', load: 24, rir: null, note: '', bw: false },
+          { label: 'Trabalho 1', reps: '8', load: 26, rir: 2,    note: '', bw: false },
+          { label: 'Trabalho 2', reps: '8', load: 26, rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'paralela', name: 'Tríceps Paralela Livre', type: 'Auxiliar 2',
         sets: [
-          { label: 'Série 1', reps: '8', load: 0, rir: null, rest: 90, note: '', bw: true },
-          { label: 'Série 2', reps: '8', load: 0, rir: null, rest: 90, note: '', bw: true },
-          { label: 'Série 3', reps: '8', load: 0, rir: null, rest: 90, note: '', bw: true },
-          { label: 'Série 4', reps: '8', load: 0, rir: 2,    rest: 90, note: '', bw: true },
+          { label: 'Série 1', reps: '8', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 2', reps: '8', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 3', reps: '8', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 4', reps: '8', load: 0, rir: 2,    note: '', bw: true },
         ]
       },
       {
         id: 'dev', name: 'Desenvolvimento com Haltere', type: 'Auxiliar 3',
         sets: [
-          { label: 'Série 1',    reps: '8', load: 0, rir: 2, rest: 90,  note: 'Barra vazia', bw: false },
-          { label: 'Série 2',    reps: '8', load: 0, rir: 2, rest: 90,  note: 'Barra vazia', bw: false },
-          { label: 'Trabalho 1', reps: '8', load: 5, rir: 2, rest: 120, note: '',             bw: false },
-          { label: 'Trabalho 2', reps: '8', load: 5, rir: 2, rest: 120, note: '',             bw: false },
+          { label: 'Série 1',    reps: '8', load: 0, rir: 2, note: 'Barra vazia', bw: false },
+          { label: 'Série 2',    reps: '8', load: 0, rir: 2, note: 'Barra vazia', bw: false },
+          { label: 'Trabalho 1', reps: '8', load: 5, rir: 2, note: '',             bw: false },
+          { label: 'Trabalho 2', reps: '8', load: 5, rir: 2, note: '',             bw: false },
         ]
       },
     ]
@@ -423,47 +391,47 @@ const PLAN = {
       {
         id: 'zercher', name: 'Agachamento Zercher', type: 'Principal',
         sets: [
-          { label: 'Aquecimento',   reps: '15', load: 10, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Progressão 1',  reps: '6',  load: 30, rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 2',  reps: '6',  load: 30, rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 3',  reps: '6',  load: 30, rir: null, rest: 90,  note: 'Longe da falha', bw: false },
-          { label: 'Progressão 4',  reps: '6',  load: 30, rir: null, rest: 120, note: 'Longe da falha', bw: false },
-          { label: 'Trabalho 1',    reps: '6',  load: 40, rir: 3,    rest: 180, note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '6',  load: 45, rir: 2,    rest: 180, note: '', bw: false },
+          { label: 'Aquecimento',   reps: '15', load: 10, rir: null, note: '', bw: false },
+          { label: 'Progressão 1',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 2',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 3',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 4',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Trabalho 1',    reps: '6',  load: 40, rir: 3,    note: '', bw: false },
+          { label: 'Trabalho 2',    reps: '6',  load: 45, rir: 2,    note: '', bw: false },
         ]
       },
       {
-        id: 'passada', name: 'Farm Walk', type: 'Auxiliar 1',
+        id: 'mesaflexora', name: 'Mesa Flexora', type: 'Auxiliar 1',
         sets: [
-          { label: 'Série 1', reps: '10 cada', load: 20, rir: null, rest: 90, note: 'Haltere', bw: false },
-          { label: 'Série 2', reps: '10 cada', load: 20, rir: null, rest: 90, note: 'Haltere', bw: false },
-          { label: 'Série 3', reps: '10 cada', load: 20, rir: null, rest: 90, note: 'Haltere', bw: false },
-          { label: 'Série 4', reps: '10 cada', load: 20, rir: null, rest: 90, note: 'Haltere', bw: false },
+          { label: 'Série 1', reps: '10–12', load: 0, rir: null, note: '', bw: false },
+          { label: 'Série 2', reps: '10–12', load: 0, rir: null, note: '', bw: false },
+          { label: 'Série 3', reps: '10–12', load: 0, rir: null, note: '', bw: false },
+          { label: 'Série 4', reps: '10–12', load: 0, rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'posteriorterra', name: 'Posterior Coxa (RDL)', type: 'Auxiliar 2',
         sets: [
-          { label: 'Série 1', reps: '10–12', load: 25, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 2', reps: '10–12', load: 25, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 3', reps: '10–12', load: 25, rir: 2,    rest: 120, note: '', bw: false },
+          { label: 'Série 1', reps: '10–12', load: 25, rir: null, note: '', bw: false },
+          { label: 'Série 2', reps: '10–12', load: 25, rir: null, note: '', bw: false },
+          { label: 'Série 3', reps: '10–12', load: 25, rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'pelvico', name: 'Pélvico (Hip Thrust)', type: 'Auxiliar 3',
         sets: [
-          { label: 'Série 1', reps: '10', load: 30, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 2', reps: '10', load: 40, rir: null, rest: 90,  note: '', bw: false },
-          { label: 'Série 3', reps: '10', load: 60, rir: null, rest: 120, note: '', bw: false },
-          { label: 'Série 4', reps: '9',  load: 60, rir: 2,    rest: 120, note: '', bw: false },
+          { label: 'Série 1', reps: '10', load: 30, rir: null, note: '', bw: false },
+          { label: 'Série 2', reps: '10', load: 40, rir: null, note: '', bw: false },
+          { label: 'Série 3', reps: '10', load: 60, rir: null, note: '', bw: false },
+          { label: 'Série 4', reps: '9',  load: 60, rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'extensora', name: 'Extensora', type: 'Auxiliar 4',
         sets: [
-          { label: 'Série 1', reps: '12–15', load: 0, rir: null, rest: 60,  note: '', bw: false },
-          { label: 'Série 2', reps: '12–15', load: 0, rir: null, rest: 60,  note: '', bw: false },
-          { label: 'Série 3', reps: '12–15', load: 0, rir: 2,    rest: 90,  note: '', bw: false },
+          { label: 'Série 1', reps: '12–15', load: 0, rir: null, note: '', bw: false },
+          { label: 'Série 2', reps: '12–15', load: 0, rir: null, note: '', bw: false },
+          { label: 'Série 3', reps: '12–15', load: 0, rir: 2,    note: '', bw: false },
         ]
       },
     ]
@@ -473,10 +441,9 @@ const PLAN = {
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
-let setsDone = {};      // 'exId-setIdx': true/false
-let currentLoads = {};  // 'exId-setIdx': number
-let restTimer = null;
-let restRemaining = 0;
+let setsDone    = {};  // 'exId-setIdx': true/false
+let currentLoads = {}; // 'exId-setIdx': number
+let currentReps  = {}; // 'exId-setIdx': string
 
 // ═══════════════════════════════════════════════
 // INIT
@@ -548,8 +515,14 @@ function renderExercise(cat, ex, container) {
 function renderSetRow(ex, s, i) {
   const key = `${ex.id}-${i}`;
   const isDone = !!setsDone[key];
+
+  // Load
   const savedLoad = currentLoads[key];
   const displayLoad = savedLoad !== undefined ? savedLoad : s.load;
+
+  // Reps
+  const savedReps = currentReps[key];
+  const displayReps = savedReps !== undefined ? savedReps : s.reps;
 
   const loadInput = s.bw
     ? `<span class="bw-label">Corporal</span> <span style="font-size:0.7rem;color:var(--muted)">+</span>
@@ -561,25 +534,21 @@ function renderSetRow(ex, s, i) {
   const rirBadge = s.rir !== null
     ? `<span class="set-rir">${s.rir} RIR</span>` : '';
 
-  const restSec = s.rest;
-  const restLabel = restSec >= 60
-    ? `${Math.floor(restSec/60)}:${String(restSec%60).padStart(2,'0')}`
-    : `${restSec}s`;
-
   return `
     <div class="set-row${isDone ? ' done' : ''}" id="setrow-${key}">
       <div class="set-top">
         <button class="set-check${isDone ? ' done' : ''}" id="check-${key}"
-          onclick="toggleSet('${ex.id}', ${i}, ${restSec}, '${ex.name} — ${s.label}')"
+          onclick="toggleSet('${ex.id}', ${i})"
         >${isDone ? '✓' : ''}</button>
         <span class="set-label">${s.label}</span>
-        <span class="set-reps">${s.reps} reps</span>
+        <input class="reps-input" type="text" value="${displayReps}"
+          id="reps-${key}" oninput="onRepsChange('${key}', this.value)" title="Repetições">
+        <span class="reps-unit">reps</span>
         ${rirBadge}
       </div>
       <div class="set-bottom">
         <div class="load-group">${loadInput}</div>
         ${s.note ? `<span class="set-note">${s.note}</span>` : '<span class="set-note"></span>'}
-        <button class="rest-btn" title="Descanso ${restLabel}" onclick="startRest(${restSec}, '${ex.name} — ${s.label}')">⏱</button>
       </div>
     </div>
   `;
@@ -591,9 +560,9 @@ function toggleEx(id) {
 }
 
 // ═══════════════════════════════════════════════
-// SET TOGGLE & LOAD
+// SET TOGGLE & INPUTS
 // ═══════════════════════════════════════════════
-function toggleSet(exId, idx, restSec, label) {
+function toggleSet(exId, idx) {
   const key = `${exId}-${idx}`;
   setsDone[key] = !setsDone[key];
 
@@ -603,10 +572,11 @@ function toggleSet(exId, idx, restSec, label) {
   if (setsDone[key]) {
     check.classList.add('done'); check.textContent = '✓';
     row.classList.add('done');
-    // Save current load value
-    const input = document.getElementById('load-' + key);
-    if (input) currentLoads[key] = parseFloat(input.value) || 0;
-    startRest(restSec, label);
+    // Save current values
+    const loadInput = document.getElementById('load-' + key);
+    if (loadInput) currentLoads[key] = parseFloat(loadInput.value) || 0;
+    const repsInput = document.getElementById('reps-' + key);
+    if (repsInput) currentReps[key] = repsInput.value.trim();
   } else {
     check.classList.remove('done'); check.textContent = '';
     row.classList.remove('done');
@@ -620,6 +590,11 @@ function toggleSet(exId, idx, restSec, label) {
 
 function onLoadChange(key, val) {
   currentLoads[key] = parseFloat(val) || 0;
+  saveState();
+}
+
+function onRepsChange(key, val) {
+  currentReps[key] = val.trim();
   saveState();
 }
 
@@ -645,7 +620,6 @@ function renderProgress(cat) {
 function updateProgress(exId) {
   const cat = getCatOfEx(exId);
   if (cat) renderProgress(cat);
-  // Update ex header counter
   const ex = getEx(exId);
   if (ex) {
     const doneCount = ex.sets.filter((_, i) => setsDone[`${exId}-${i}`]).length;
@@ -670,40 +644,6 @@ function getEx(exId) {
 }
 
 // ═══════════════════════════════════════════════
-// REST TIMER
-// ═══════════════════════════════════════════════
-function startRest(seconds, label) {
-  if (restTimer) clearInterval(restTimer);
-  restRemaining = seconds;
-  document.getElementById('restLabel').textContent = label || '—';
-  document.getElementById('restOverlay').classList.add('active');
-  updateRestDisplay();
-  restTimer = setInterval(() => {
-    restRemaining--;
-    if (restRemaining <= 0) {
-      skipRest();
-      try { new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAA==').play(); } catch(e) {}
-    } else {
-      updateRestDisplay();
-    }
-  }, 1000);
-}
-
-function updateRestDisplay() {
-  const m = Math.floor(restRemaining / 60);
-  const s = restRemaining % 60;
-  const el = document.getElementById('restCountdown');
-  el.textContent = `${m}:${String(s).padStart(2,'0')}`;
-  el.style.color = restRemaining <= 10 ? 'var(--accent2)' : 'var(--yellow)';
-}
-
-function skipRest() {
-  if (restTimer) { clearInterval(restTimer); restTimer = null; }
-  document.getElementById('restOverlay').classList.remove('active');
-  // If save bar is visible, move it up above rest overlay won't conflict
-}
-
-// ═══════════════════════════════════════════════
 // SAVE BAR
 // ═══════════════════════════════════════════════
 function updateSaveBar() {
@@ -721,14 +661,17 @@ function saveWorkout() {
   const doneSets = Object.entries(setsDone).filter(([,v]) => v);
   if (doneSets.length === 0) return;
 
-  // Collect loads snapshot
-  const snapshot = {};
+  // Collect snapshot
+  const loadsSnap = {};
+  const repsSnap  = {};
   for (const cat of ['pull','push','legs']) {
     PLAN[cat].exercises.forEach(ex => {
       ex.sets.forEach((s, i) => {
         const key = `${ex.id}-${i}`;
-        const input = document.getElementById('load-' + key);
-        snapshot[key] = input ? (parseFloat(input.value) || 0) : (currentLoads[key] || s.load);
+        const loadEl = document.getElementById('load-' + key);
+        loadsSnap[key] = loadEl ? (parseFloat(loadEl.value) || 0) : (currentLoads[key] || s.load);
+        const repsEl = document.getElementById('reps-' + key);
+        repsSnap[key] = repsEl ? repsEl.value.trim() : (currentReps[key] || s.reps);
       });
     });
   }
@@ -736,18 +679,16 @@ function saveWorkout() {
   const history = loadHistory();
   history.unshift({
     date: new Date().toISOString(),
-    sets: Object.fromEntries(doneSets.map(([k]) => [k, snapshot[k] ?? 0])),
-    loads: snapshot,
+    sets: Object.fromEntries(doneSets.map(([k]) => [k, loadsSnap[k] ?? 0])),
+    loads: loadsSnap,
+    reps: repsSnap,
     total: doneSets.length
   });
   localStorage.setItem('bjj-history', JSON.stringify(history));
+  localStorage.setItem('bjj-last-loads', JSON.stringify(loadsSnap));
+  localStorage.setItem('bjj-last-reps',  JSON.stringify(repsSnap));
 
-  // Remember loads as last-session for next time
-  localStorage.setItem('bjj-last-loads', JSON.stringify(snapshot));
-
-  // Reset session
-  setsDone = {};
-  currentLoads = {};
+  setsDone = {}; currentLoads = {}; currentReps = {};
   saveState();
   renderAll();
   updateSaveBar();
@@ -768,12 +709,11 @@ function renderMonitoring() {
 
   let html = '';
   for (const cat of ['pull','push','legs']) {
-    const catNames = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas' };
-    const catColors = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)' };
+    const catNames    = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas' };
+    const catColors   = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)' };
     const catBgColors = { pull: 'rgba(52,152,219,0.15)', push: 'rgba(232,48,78,0.15)', legs: 'rgba(46,204,113,0.15)' };
 
     PLAN[cat].exercises.forEach(ex => {
-      // Filter sessions where at least one set of this exercise was done
       const relevantSessions = history.filter(h =>
         ex.sets.some((_, i) => h.sets && h.sets[`${ex.id}-${i}`] !== undefined)
       );
@@ -804,16 +744,14 @@ function renderMonitoring() {
             const extra = load > 0 ? `+${load}` : 'BW';
             html += `<td class="bw-cell pw">${extra}</td>`;
           } else {
-            // Compare with previous session
-            let cls = 'pw';
-            let arrow = '';
+            let cls = 'pw', arrow = '';
             if (sessionIdx < relevantSessions.length - 1) {
               const prev = relevantSessions[sessionIdx + 1];
               const prevLoad = prev.loads ? prev.loads[key] : (prev.sets ? prev.sets[key] : null);
               if (prevLoad !== null && prevLoad !== undefined) {
-                if (load > prevLoad) { cls = 'pw up'; arrow = ' ↑'; }
+                if (load > prevLoad)      { cls = 'pw up';   arrow = ' ↑'; }
                 else if (load < prevLoad) { cls = 'pw down'; arrow = ' ↓'; }
-                else { cls = 'pw same'; }
+                else                      { cls = 'pw same'; }
               }
             }
             html += `<td class="${cls}">${load}kg${arrow}</td>`;
@@ -833,6 +771,7 @@ function clearHistory() {
   if (confirm('Apagar todo o histórico de treinos?')) {
     localStorage.removeItem('bjj-history');
     localStorage.removeItem('bjj-last-loads');
+    localStorage.removeItem('bjj-last-reps');
     renderMonitoring();
   }
 }
@@ -845,21 +784,30 @@ function loadHistory() {
 }
 
 function saveState() {
-  localStorage.setItem('bjj-session-sets', JSON.stringify(setsDone));
+  localStorage.setItem('bjj-session-sets',  JSON.stringify(setsDone));
   localStorage.setItem('bjj-session-loads', JSON.stringify(currentLoads));
+  localStorage.setItem('bjj-session-reps',  JSON.stringify(currentReps));
 }
 
 function loadState() {
   try { setsDone = JSON.parse(localStorage.getItem('bjj-session-sets') || '{}'); } catch(e) { setsDone = {}; }
-  // Load last saved loads as defaults
+
   try {
     const lastLoads = JSON.parse(localStorage.getItem('bjj-last-loads') || '{}');
-    // Merge with plan defaults: last session wins
     currentLoads = lastLoads;
   } catch(e) { currentLoads = {}; }
   try {
     const sessionLoads = JSON.parse(localStorage.getItem('bjj-session-loads') || '{}');
-    Object.assign(currentLoads, sessionLoads); // session overrides last
+    Object.assign(currentLoads, sessionLoads);
+  } catch(e) {}
+
+  try {
+    const lastReps = JSON.parse(localStorage.getItem('bjj-last-reps') || '{}');
+    currentReps = lastReps;
+  } catch(e) { currentReps = {}; }
+  try {
+    const sessionReps = JSON.parse(localStorage.getItem('bjj-session-reps') || '{}');
+    Object.assign(currentReps, sessionReps);
   } catch(e) {}
 }
 </script>
