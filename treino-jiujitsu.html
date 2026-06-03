@@ -18,6 +18,7 @@
       --yellow: #f1c40f;
       --blue: #3498db;
       --purple: #9b59b6;
+      --orange: #e67e22;
       --r: 12px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,10 +53,11 @@
     }
     .tab:hover { color: var(--text); background: var(--surface2); }
     .tab.active { background: var(--surface); color: var(--text); border-color: var(--border); border-bottom-color: var(--surface); margin-bottom: -1px; }
-    .tab.pull.active  { color: var(--blue);   border-top-color: var(--blue); }
-    .tab.push.active  { color: var(--accent2); border-top-color: var(--accent2); }
-    .tab.legs.active  { color: var(--green);  border-top-color: var(--green); }
-    .tab.mon.active   { color: var(--yellow); border-top-color: var(--yellow); }
+    .tab.pull.active   { color: var(--blue);   border-top-color: var(--blue); }
+    .tab.push.active   { color: var(--accent2); border-top-color: var(--accent2); }
+    .tab.legs.active   { color: var(--green);  border-top-color: var(--green); }
+    .tab.core.active   { color: var(--orange); border-top-color: var(--orange); }
+    .tab.mon.active    { color: var(--yellow); border-top-color: var(--yellow); }
 
     /* ── PANELS ── */
     .content { padding: 20px; max-width: 860px; margin: 0 auto; }
@@ -72,6 +74,7 @@
     .cat-header.pull { color: var(--blue); }
     .cat-header.push { color: var(--accent2); }
     .cat-header.legs { color: var(--green); }
+    .cat-header.core { color: var(--orange); }
     .cat-icon { font-size: 2.2rem; }
     .cat-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 3px; }
     .cat-sub { font-size: 0.8rem; color: var(--muted); }
@@ -100,6 +103,7 @@
     }
     .badge-main { background: rgba(200,16,46,0.2); color: var(--accent2); }
     .badge-aux  { background: rgba(52,152,219,0.15); color: var(--blue); }
+    .badge-core { background: rgba(230,126,34,0.15); color: var(--orange); }
     .ex-name { font-size: 1rem; font-weight: 700; flex: 1; }
     .ex-progress { font-size: 0.8rem; color: var(--muted); margin-right: 4px; }
     .ex-arrow { color: var(--muted); font-size: 0.85rem; transition: transform 0.2s; }
@@ -135,7 +139,6 @@
 
     .set-bottom { display: flex; align-items: center; gap: 8px; padding-left: 36px; }
     .load-group { display: flex; align-items: center; gap: 5px; }
-    .load-label { font-size: 0.72rem; color: var(--muted); }
     .load-input {
       width: 64px; padding: 5px 6px;
       background: var(--surface2); border: 1px solid var(--border);
@@ -234,6 +237,7 @@
   <button class="tab pull active" onclick="switchTab('pull')">🔱 Puxar / Terra</button>
   <button class="tab push"        onclick="switchTab('push')">🏋️ Empurrar / Supino</button>
   <button class="tab legs"        onclick="switchTab('legs')">🦵 Pernas / Zercher</button>
+  <button class="tab core"        onclick="switchTab('core')">🔥 Core</button>
   <button class="tab mon"         onclick="switchTab('mon')">📈 Monitoramento</button>
 </div>
 
@@ -273,6 +277,18 @@
     </div>
     <div id="prog-legs" class="progress-wrap"></div>
     <div id="grid-legs"></div>
+  </div>
+
+  <div class="panel core" id="panel-core">
+    <div class="cat-header core">
+      <div class="cat-icon">🔥</div>
+      <div>
+        <div class="cat-title">Core</div>
+        <div class="cat-sub">Roda Abdominal · Elevação de Pernas · Russian Twist · Prancha</div>
+      </div>
+    </div>
+    <div id="prog-core" class="progress-wrap"></div>
+    <div id="grid-core"></div>
   </div>
 
   <div class="panel mon" id="panel-mon">
@@ -324,19 +340,19 @@ const PLAN = {
       {
         id: 'puxada', name: 'Puxada Supinada', type: 'Auxiliar 2',
         sets: [
-          { label: 'Série 1',       reps: '8–10', load: 61,   rir: null, note: '', bw: false },
-          { label: 'Série 2',       reps: '8',    load: 61,   rir: null, note: '', bw: false },
-          { label: 'Trabalho 1',    reps: '8–10', load: 68,   rir: 2,    note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '8',    load: 75,   rir: 2,    note: '', bw: false },
+          { label: 'Série 1',    reps: '8–10', load: 61, rir: null, note: '', bw: false },
+          { label: 'Série 2',    reps: '8',    load: 61, rir: null, note: '', bw: false },
+          { label: 'Trabalho 1', reps: '8–10', load: 68, rir: 2,    note: '', bw: false },
+          { label: 'Trabalho 2', reps: '8',    load: 75, rir: 2,    note: '', bw: false },
         ]
       },
       {
         id: 'barrafixa', name: 'Barra Fixa Supinada', type: 'Auxiliar 3',
         sets: [
-          { label: 'Série 1',  reps: '8', load: 0, rir: null, note: '', bw: true },
-          { label: 'Série 2',  reps: '6', load: 0, rir: null, note: '', bw: true },
-          { label: 'Série 3',  reps: '6', load: 0, rir: null, note: '', bw: true },
-          { label: 'Série 4',  reps: '5', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 1', reps: '8', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 2', reps: '6', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 3', reps: '6', load: 0, rir: null, note: '', bw: true },
+          { label: 'Série 4', reps: '5', load: 0, rir: null, note: '', bw: true },
         ]
       },
     ]
@@ -347,13 +363,13 @@ const PLAN = {
       {
         id: 'supino', name: 'Supino Reto', type: 'Principal',
         sets: [
-          { label: 'Aquecimento',   reps: '15',   load: 10,   rir: null, note: 'Longe da falha', bw: false },
-          { label: 'Progressão 1',  reps: '6',    load: 20,   rir: null, note: '', bw: false },
-          { label: 'Progressão 2',  reps: '6',    load: 20,   rir: null, note: '', bw: false },
-          { label: 'Progressão 3',  reps: '6',    load: 22.5, rir: null, note: '', bw: false },
-          { label: 'Progressão 4',  reps: '6',    load: 25,   rir: null, note: '', bw: false },
-          { label: 'Trabalho 1',    reps: '6',    load: 30,   rir: 3,    note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '5',    load: 30,   rir: 2,    note: '', bw: false },
+          { label: 'Aquecimento',  reps: '15', load: 10,   rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 1', reps: '6',  load: 20,   rir: null, note: '', bw: false },
+          { label: 'Progressão 2', reps: '6',  load: 20,   rir: null, note: '', bw: false },
+          { label: 'Progressão 3', reps: '6',  load: 22.5, rir: null, note: '', bw: false },
+          { label: 'Progressão 4', reps: '6',  load: 25,   rir: null, note: '', bw: false },
+          { label: 'Trabalho 1',   reps: '6',  load: 30,   rir: 3,    note: '', bw: false },
+          { label: 'Trabalho 2',   reps: '5',  load: 30,   rir: 2,    note: '', bw: false },
         ]
       },
       {
@@ -391,13 +407,13 @@ const PLAN = {
       {
         id: 'zercher', name: 'Agachamento Zercher', type: 'Principal',
         sets: [
-          { label: 'Aquecimento',   reps: '15', load: 10, rir: null, note: '', bw: false },
-          { label: 'Progressão 1',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
-          { label: 'Progressão 2',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
-          { label: 'Progressão 3',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
-          { label: 'Progressão 4',  reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
-          { label: 'Trabalho 1',    reps: '6',  load: 40, rir: 3,    note: '', bw: false },
-          { label: 'Trabalho 2',    reps: '6',  load: 45, rir: 2,    note: '', bw: false },
+          { label: 'Aquecimento',  reps: '15', load: 10, rir: null, note: '', bw: false },
+          { label: 'Progressão 1', reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 2', reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 3', reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Progressão 4', reps: '6',  load: 30, rir: null, note: 'Longe da falha', bw: false },
+          { label: 'Trabalho 1',   reps: '6',  load: 40, rir: 3,    note: '', bw: false },
+          { label: 'Trabalho 2',   reps: '6',  load: 45, rir: 2,    note: '', bw: false },
         ]
       },
       {
@@ -435,15 +451,55 @@ const PLAN = {
         ]
       },
     ]
+  },
+  core: {
+    color: 'var(--orange)',
+    exercises: [
+      {
+        id: 'rodaabdominal', name: 'Roda Abdominal', type: 'Principal',
+        sets: [
+          { label: 'Série 1', reps: '8',  load: 0, rir: null, note: 'Joelhos no chão', bw: true },
+          { label: 'Série 2', reps: '8',  load: 0, rir: null, note: 'Joelhos no chão', bw: true },
+          { label: 'Série 3', reps: '8',  load: 0, rir: null, note: 'Joelhos no chão', bw: true },
+          { label: 'Série 4', reps: '8',  load: 0, rir: 2,    note: 'Joelhos no chão', bw: true },
+        ]
+      },
+      {
+        id: 'elevaopernas', name: 'Elevação de Pernas', type: 'Exercício 2',
+        sets: [
+          { label: 'Série 1', reps: '12', load: 0, rir: null, note: 'Deitado ou na barra', bw: true },
+          { label: 'Série 2', reps: '12', load: 0, rir: null, note: 'Deitado ou na barra', bw: true },
+          { label: 'Série 3', reps: '12', load: 0, rir: 2,    note: 'Deitado ou na barra', bw: true },
+        ]
+      },
+      {
+        id: 'russiantwist', name: 'Russian Twist', type: 'Exercício 3',
+        sets: [
+          { label: 'Série 1', reps: '20', load: 0, rir: null, note: '10 cada lado', bw: false },
+          { label: 'Série 2', reps: '20', load: 0, rir: null, note: '10 cada lado', bw: false },
+          { label: 'Série 3', reps: '20', load: 4, rir: 2,    note: '10 cada lado', bw: false },
+        ]
+      },
+      {
+        id: 'prancha', name: 'Prancha', type: 'Exercício 4',
+        sets: [
+          { label: 'Série 1', reps: '30s', load: 0, rir: null, note: 'Cotovelos no chão', bw: true },
+          { label: 'Série 2', reps: '40s', load: 0, rir: null, note: 'Cotovelos no chão', bw: true },
+          { label: 'Série 3', reps: '45s', load: 0, rir: 2,    note: 'Cotovelos no chão', bw: true },
+        ]
+      },
+    ]
   }
 };
 
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
-let setsDone    = {};  // 'exId-setIdx': true/false
-let currentLoads = {}; // 'exId-setIdx': number
-let currentReps  = {}; // 'exId-setIdx': string
+let setsDone    = {};
+let currentLoads = {};
+let currentReps  = {};
+
+const ALL_CATS = ['pull','push','legs','core'];
 
 // ═══════════════════════════════════════════════
 // INIT
@@ -463,9 +519,7 @@ function setHeaderDate() {
 }
 
 function renderAll() {
-  renderCategory('pull');
-  renderCategory('push');
-  renderCategory('legs');
+  ALL_CATS.forEach(cat => renderCategory(cat));
   renderMonitoring();
 }
 
@@ -496,11 +550,13 @@ function renderExercise(cat, ex, container) {
   card.id = 'excard-' + ex.id;
 
   const doneCount = ex.sets.filter((_, i) => setsDone[`${ex.id}-${i}`]).length;
-  const isMain = ex.type === 'Principal';
+  const isMain  = ex.type === 'Principal';
+  const isCore  = cat === 'core' && !isMain;
+  const badgeCls = isMain ? 'badge-main' : isCore ? 'badge-core' : 'badge-aux';
 
   card.innerHTML = `
     <div class="ex-header" onclick="toggleEx('${ex.id}')">
-      <span class="ex-badge ${isMain ? 'badge-main' : 'badge-aux'}">${ex.type}</span>
+      <span class="ex-badge ${badgeCls}">${ex.type}</span>
       <span class="ex-name">${ex.name}</span>
       <span class="ex-progress" id="exprog-${ex.id}">${doneCount}/${ex.sets.length}</span>
       <span class="ex-arrow">▼</span>
@@ -516,11 +572,8 @@ function renderSetRow(ex, s, i) {
   const key = `${ex.id}-${i}`;
   const isDone = !!setsDone[key];
 
-  // Load
   const savedLoad = currentLoads[key];
   const displayLoad = savedLoad !== undefined ? savedLoad : s.load;
-
-  // Reps
   const savedReps = currentReps[key];
   const displayReps = savedReps !== undefined ? savedReps : s.reps;
 
@@ -531,8 +584,7 @@ function renderSetRow(ex, s, i) {
     : `<input class="load-input" type="number" min="0" step="0.5" value="${displayLoad}"
          id="load-${key}" oninput="onLoadChange('${key}', this.value)"> <span class="load-unit">kg</span>`;
 
-  const rirBadge = s.rir !== null
-    ? `<span class="set-rir">${s.rir} RIR</span>` : '';
+  const rirBadge = s.rir !== null ? `<span class="set-rir">${s.rir} RIR</span>` : '';
 
   return `
     <div class="set-row${isDone ? ' done' : ''}" id="setrow-${key}">
@@ -555,8 +607,7 @@ function renderSetRow(ex, s, i) {
 }
 
 function toggleEx(id) {
-  const card = document.getElementById('excard-' + id);
-  card.classList.toggle('open');
+  document.getElementById('excard-' + id).classList.toggle('open');
 }
 
 // ═══════════════════════════════════════════════
@@ -572,11 +623,10 @@ function toggleSet(exId, idx) {
   if (setsDone[key]) {
     check.classList.add('done'); check.textContent = '✓';
     row.classList.add('done');
-    // Save current values
-    const loadInput = document.getElementById('load-' + key);
-    if (loadInput) currentLoads[key] = parseFloat(loadInput.value) || 0;
-    const repsInput = document.getElementById('reps-' + key);
-    if (repsInput) currentReps[key] = repsInput.value.trim();
+    const loadEl = document.getElementById('load-' + key);
+    if (loadEl) currentLoads[key] = parseFloat(loadEl.value) || 0;
+    const repsEl = document.getElementById('reps-' + key);
+    if (repsEl) currentReps[key] = repsEl.value.trim();
   } else {
     check.classList.remove('done'); check.textContent = '';
     row.classList.remove('done');
@@ -629,14 +679,14 @@ function updateProgress(exId) {
 }
 
 function getCatOfEx(exId) {
-  for (const cat of ['pull','push','legs']) {
+  for (const cat of ALL_CATS) {
     if (PLAN[cat].exercises.find(e => e.id === exId)) return cat;
   }
   return null;
 }
 
 function getEx(exId) {
-  for (const cat of ['pull','push','legs']) {
+  for (const cat of ALL_CATS) {
     const ex = PLAN[cat].exercises.find(e => e.id === exId);
     if (ex) return ex;
   }
@@ -661,10 +711,8 @@ function saveWorkout() {
   const doneSets = Object.entries(setsDone).filter(([,v]) => v);
   if (doneSets.length === 0) return;
 
-  // Collect snapshot
-  const loadsSnap = {};
-  const repsSnap  = {};
-  for (const cat of ['pull','push','legs']) {
+  const loadsSnap = {}, repsSnap = {};
+  for (const cat of ALL_CATS) {
     PLAN[cat].exercises.forEach(ex => {
       ex.sets.forEach((s, i) => {
         const key = `${ex.id}-${i}`;
@@ -708,11 +756,11 @@ function renderMonitoring() {
   }
 
   let html = '';
-  for (const cat of ['pull','push','legs']) {
-    const catNames    = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas' };
-    const catColors   = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)' };
-    const catBgColors = { pull: 'rgba(52,152,219,0.15)', push: 'rgba(232,48,78,0.15)', legs: 'rgba(46,204,113,0.15)' };
+  const catNames    = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas', core: 'Core' };
+  const catColors   = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)', core: 'var(--orange)' };
+  const catBgColors = { pull: 'rgba(52,152,219,0.15)', push: 'rgba(232,48,78,0.15)', legs: 'rgba(46,204,113,0.15)', core: 'rgba(230,126,34,0.15)' };
 
+  for (const cat of ALL_CATS) {
     PLAN[cat].exercises.forEach(ex => {
       const relevantSessions = history.filter(h =>
         ex.sets.some((_, i) => h.sets && h.sets[`${ex.id}-${i}`] !== undefined)
@@ -727,7 +775,7 @@ function renderMonitoring() {
         <table class="prog-table">
           <thead><tr>
             <th>Data</th>
-            ${ex.sets.map((s, i) => `<th>${s.label}<br><span style="font-size:0.65rem;font-weight:400">${s.reps}r${s.rir!==null?' · '+s.rir+'RIR':''}</span></th>`).join('')}
+            ${ex.sets.map(s => `<th>${s.label}<br><span style="font-size:0.65rem;font-weight:400">${s.reps}${s.rir!==null?' · '+s.rir+'RIR':''}</span></th>`).join('')}
           </tr></thead>
           <tbody>`;
 
@@ -741,8 +789,7 @@ function renderMonitoring() {
           if (!wasDone) { html += `<td style="color:var(--border)">—</td>`; return; }
           const load = session.loads ? session.loads[key] : session.sets[key];
           if (s.bw) {
-            const extra = load > 0 ? `+${load}` : 'BW';
-            html += `<td class="bw-cell pw">${extra}</td>`;
+            html += `<td class="bw-cell pw">${load > 0 ? '+'+load+'kg' : 'BW'}</td>`;
           } else {
             let cls = 'pw', arrow = '';
             if (sessionIdx < relevantSessions.length - 1) {
@@ -792,23 +839,11 @@ function saveState() {
 function loadState() {
   try { setsDone = JSON.parse(localStorage.getItem('bjj-session-sets') || '{}'); } catch(e) { setsDone = {}; }
 
-  try {
-    const lastLoads = JSON.parse(localStorage.getItem('bjj-last-loads') || '{}');
-    currentLoads = lastLoads;
-  } catch(e) { currentLoads = {}; }
-  try {
-    const sessionLoads = JSON.parse(localStorage.getItem('bjj-session-loads') || '{}');
-    Object.assign(currentLoads, sessionLoads);
-  } catch(e) {}
+  try { currentLoads = JSON.parse(localStorage.getItem('bjj-last-loads') || '{}'); } catch(e) { currentLoads = {}; }
+  try { Object.assign(currentLoads, JSON.parse(localStorage.getItem('bjj-session-loads') || '{}')); } catch(e) {}
 
-  try {
-    const lastReps = JSON.parse(localStorage.getItem('bjj-last-reps') || '{}');
-    currentReps = lastReps;
-  } catch(e) { currentReps = {}; }
-  try {
-    const sessionReps = JSON.parse(localStorage.getItem('bjj-session-reps') || '{}');
-    Object.assign(currentReps, sessionReps);
-  } catch(e) {}
+  try { currentReps = JSON.parse(localStorage.getItem('bjj-last-reps') || '{}'); } catch(e) { currentReps = {}; }
+  try { Object.assign(currentReps, JSON.parse(localStorage.getItem('bjj-session-reps') || '{}')); } catch(e) {}
 }
 </script>
 </body>
