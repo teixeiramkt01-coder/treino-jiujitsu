@@ -19,6 +19,7 @@
       --blue: #3498db;
       --purple: #9b59b6;
       --orange: #e67e22;
+      --teal: #1abc9c;
       --r: 12px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,6 +58,7 @@
     .tab.push.active   { color: var(--accent2); border-top-color: var(--accent2); }
     .tab.legs.active   { color: var(--green);  border-top-color: var(--green); }
     .tab.core.active   { color: var(--orange); border-top-color: var(--orange); }
+    .tab.reab.active   { color: var(--teal);   border-top-color: var(--teal); }
     .tab.mon.active    { color: var(--yellow); border-top-color: var(--yellow); }
 
     /* ── PANELS ── */
@@ -75,6 +77,7 @@
     .cat-header.push { color: var(--accent2); }
     .cat-header.legs { color: var(--green); }
     .cat-header.core { color: var(--orange); }
+    .cat-header.reab { color: var(--teal); }
     .cat-icon { font-size: 2.2rem; }
     .cat-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 3px; }
     .cat-sub { font-size: 0.8rem; color: var(--muted); }
@@ -104,6 +107,30 @@
     .badge-main { background: rgba(200,16,46,0.2); color: var(--accent2); }
     .badge-aux  { background: rgba(52,152,219,0.15); color: var(--blue); }
     .badge-core { background: rgba(230,126,34,0.15); color: var(--orange); }
+    .badge-reab { background: rgba(26,188,156,0.15); color: var(--teal); }
+
+    /* ── DIAGNOSIS CARD ── */
+    .diag-card {
+      background: rgba(26,188,156,0.06); border: 1px solid rgba(26,188,156,0.25);
+      border-radius: var(--r); padding: 14px 16px; margin-bottom: 20px;
+    }
+    .diag-title { font-size: 0.82rem; font-weight: 700; color: var(--teal); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .diag-item { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; padding-left: 10px; }
+    .diag-item::before { content: "•"; color: var(--teal); margin-right: 6px; }
+    .diag-goal { font-size: 0.82rem; color: var(--text); margin-top: 10px; font-style: italic; }
+    .diag-alert {
+      background: rgba(241,196,15,0.08); border: 1px solid rgba(241,196,15,0.2);
+      border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 0.76rem; color: var(--yellow);
+    }
+
+    /* ── EXERCISE ILLUSTRATION ── */
+    .ex-illustration {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      background: var(--surface2); display: flex; align-items: flex-start; gap: 14px;
+    }
+    .ex-illustration svg { width: 160px; min-width: 160px; height: 95px; }
+    .ex-illustration-note { font-size: 0.76rem; color: var(--muted); line-height: 1.55; }
+    .ex-desc-only { padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
     .ex-name { font-size: 1rem; font-weight: 700; flex: 1; }
     .ex-progress { font-size: 0.8rem; color: var(--muted); margin-right: 4px; }
     .ex-arrow { color: var(--muted); font-size: 0.85rem; transition: transform 0.2s; }
@@ -238,6 +265,7 @@
   <button class="tab push"        onclick="switchTab('push')">🏋️ Empurrar / Supino</button>
   <button class="tab legs"        onclick="switchTab('legs')">🦵 Pernas / Zercher</button>
   <button class="tab core"        onclick="switchTab('core')">🔥 Core</button>
+  <button class="tab reab"        onclick="switchTab('reab')">🩺 Reab. Ombro</button>
   <button class="tab mon"         onclick="switchTab('mon')">📈 Monitoramento</button>
 </div>
 
@@ -289,6 +317,27 @@
     </div>
     <div id="prog-core" class="progress-wrap"></div>
     <div id="grid-core"></div>
+  </div>
+
+  <div class="panel reab" id="panel-reab">
+    <div class="cat-header reab">
+      <div class="cat-icon">🩺</div>
+      <div>
+        <div class="cat-title">Reabilitação — Ombro</div>
+        <div class="cat-sub">Manguito Rotador · Serrátil · Escápula · Mobilidade</div>
+      </div>
+    </div>
+    <div class="diag-card">
+      <div class="diag-title">📋 Diagnóstico</div>
+      <div class="diag-item">Rotura parcial desinsercional do supraespinhal (&gt;50% da espessura)</div>
+      <div class="diag-item">Infraespinhal com tendinopatia leve</div>
+      <div class="diag-item">Pequena bursite subacromial-subdeltoidea (provavelmente reativa)</div>
+      <div class="diag-item">Espessamento capsular inferior com edema — monitorar rotação externa e abdução</div>
+      <div class="diag-goal">🎯 Objetivo: evitar que a lesão de 50% vire 100%, enquanto recupera capacidade de carga.</div>
+      <div class="diag-alert">⚠️ Gelo 15–20 min em caso de dor. Sem americana, kimura, arm lock ou triângulos apertados.</div>
+    </div>
+    <div id="prog-reab" class="progress-wrap"></div>
+    <div id="grid-reab"></div>
   </div>
 
   <div class="panel mon" id="panel-mon">
@@ -492,6 +541,122 @@ const PLAN = {
   }
 };
 
+const PLAN_REAB = {
+  color: 'var(--teal)',
+  exercises: [
+    {
+      id: 'anjoParede', name: 'Anjo na Parede', type: 'Manguito',
+      desc: 'Costas e braços colados na parede. Deslize os braços para cima (como anjo de neve). Mantenha cotovelos e pulsos tocando a parede o tempo todo.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: '', bw: true },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: '', bw: true },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: '', bw: true },
+      ]
+    },
+    {
+      id: 'rotExterna', name: 'Rotação Externa Isométrica', type: 'Manguito',
+      desc: 'Cotovelo colado ao lado do corpo, dobrado a 90°. Antebraço pressionando a parede para fora. Sem mover o braço — isométrico. Evoluir para 3×12 dinâmico quando EVA ≤ 3.',
+      sets: [
+        { label: 'Série 1', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 2', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 3', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+      ]
+    },
+    {
+      id: 'rotInterna', name: 'Rotação Interna Isométrica', type: 'Manguito',
+      desc: 'Cotovelo colado ao lado do corpo, dobrado a 90°. Antebraço pressionando a parede para dentro (em direção ao corpo). Sem mover o braço — isométrico.',
+      sets: [
+        { label: 'Série 1', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 2', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 3', reps: '40s', load: 0, rir: null, note: 'Isométrico', bw: true },
+      ]
+    },
+    {
+      id: 'isoAbducao', name: 'Isometria na Abdução', type: 'Manguito',
+      desc: 'Braço abduzido a ~75°. Pressione o braço lateralmente para cima contra uma superfície (parede, mesa, mão do outro braço). Segure sem mover.',
+      sets: [
+        { label: 'Série 1', reps: '15s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 2', reps: '15s', load: 0, rir: null, note: 'Isométrico', bw: true },
+        { label: 'Série 3', reps: '15s', load: 0, rir: null, note: 'Isométrico', bw: true },
+      ]
+    },
+    {
+      id: 'elevFrontal', name: 'Elevação Frontal Iso', type: 'Manguito',
+      desc: 'Eleve o braço para frente até ~80° (abaixo de 90°). Segure 40s. Comece com 10% da carga anterior à lesão, ou na faixa de dor 4–5/10.',
+      sets: [
+        { label: 'Série 1', reps: '40s', load: 0, rir: null, note: '10% da carga', bw: false },
+        { label: 'Série 2', reps: '40s', load: 0, rir: null, note: '10% da carga', bw: false },
+        { label: 'Série 3', reps: '40s', load: 0, rir: null, note: '10% da carga', bw: false },
+      ]
+    },
+    {
+      id: 'elevLateral', name: 'Elevação Lateral', type: 'Manguito',
+      desc: 'Amplitude entre 60–90°. Pega neutra (polegar apontando para cima). Não ultrapasse 90° ainda.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: '60–90° ADM', bw: false },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: '60–90° ADM', bw: false },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: '60–90° ADM', bw: false },
+      ]
+    },
+    {
+      id: 'yti', name: 'Y, T e I (Escápula)', type: 'Escápula',
+      desc: 'De bruços. Eleve os braços nas três posições: Y (120°), T (90°), I (acima da cabeça). Foco em serrátil, romboides e trapézio inferior. Retorne devagar.',
+      sets: [
+        { label: 'Série Y', reps: '10', load: 0, rir: null, note: 'Braços a 120°', bw: true },
+        { label: 'Série T', reps: '10', load: 0, rir: null, note: 'Braços a 90°', bw: true },
+        { label: 'Série I', reps: '10', load: 0, rir: null, note: 'Braços acima', bw: true },
+      ]
+    },
+    {
+      id: 'supermanReab', name: 'Superman (sem ext. quadril)', type: 'Escápula',
+      desc: 'De bruços. Eleve tronco e braços. IMPORTANTE: quadril fica no chão — sem extensão de quadril. Foco no trabalho de escápula e trapézio.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: 'Quadril no chão', bw: true },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: 'Quadril no chão', bw: true },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: 'Quadril no chão', bw: true },
+      ]
+    },
+    {
+      id: 'remadaAberta', name: 'Remada Aberta', type: 'Escápula',
+      desc: 'Remada com cotovelos abertos (afastados do corpo). Foco em romboides e trapézio médio.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: '', bw: false },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: '', bw: false },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: '', bw: false },
+      ]
+    },
+    {
+      id: 'remadaFechada', name: 'Remada Curvada Fechada', type: 'Escápula',
+      desc: 'Remada curvada com cotovelos próximos ao corpo. Foco em serrátil e trapézio inferior.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: '', bw: false },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: '', bw: false },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: '', bw: false },
+      ]
+    },
+    {
+      id: 'retracaoEsc', name: 'Retração Escapular na Parede', type: 'Mobilidade',
+      desc: 'Costas na parede. Aperte as escápulas contra a parede (como se quisesse juntar as omoplatas). Progressão: 4 sem → Gato e Vaca → 4 sem → Prancha → 4 sem → Flexão de braço aberta.',
+      sets: [
+        { label: 'Série 1', reps: '10', load: 0, rir: null, note: 'Na parede', bw: true },
+        { label: 'Série 2', reps: '10', load: 0, rir: null, note: 'Na parede', bw: true },
+        { label: 'Série 3', reps: '10', load: 0, rir: null, note: 'Na parede', bw: true },
+      ]
+    },
+    {
+      id: 'flexAdux', name: 'Flexão + Adução (magic circle)', type: 'Mobilidade',
+      desc: 'Eleve o braço para frente (menos de 90°) + adução do ombro pressionando o magic circle ou bola com os dois braços.',
+      sets: [
+        { label: 'Série 1', reps: '8', load: 0, rir: null, note: 'Magic circle / bola', bw: true },
+        { label: 'Série 2', reps: '8', load: 0, rir: null, note: 'Magic circle / bola', bw: true },
+        { label: 'Série 3', reps: '8', load: 0, rir: null, note: 'Magic circle / bola', bw: true },
+      ]
+    },
+  ]
+};
+
+PLAN.reab = PLAN_REAB;
+
 // ═══════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════
@@ -499,7 +664,7 @@ let setsDone    = {};
 let currentLoads = {};
 let currentReps  = {};
 
-const ALL_CATS = ['pull','push','legs','core'];
+const ALL_CATS = ['pull','push','legs','core','reab'];
 
 // ═══════════════════════════════════════════════
 // INIT
@@ -544,6 +709,144 @@ function renderCategory(cat) {
   renderProgress(cat);
 }
 
+const EXERCISE_SVGS = {
+anjoParede: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<rect x="12" y="6" width="136" height="80" rx="5" fill="#23232e"/>
+<circle cx="80" cy="23" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="30" x2="80" y2="60" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="60" x2="68" y2="84" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="60" x2="92" y2="84" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="40" x2="44" y2="40" stroke="#7a7a9a" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="44" y1="40" x2="44" y2="24" stroke="#7a7a9a" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="80" y1="40" x2="116" y2="40" stroke="#7a7a9a" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="116" y1="40" x2="116" y2="24" stroke="#7a7a9a" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="80" y1="40" x2="52" y2="13" stroke="#1abc9c" stroke-width="2.5"/>
+<line x1="80" y1="40" x2="108" y2="13" stroke="#1abc9c" stroke-width="2.5"/>
+<text x="36" y="11" font-size="12" fill="#1abc9c">↑</text>
+<text x="108" y="11" font-size="12" fill="#1abc9c">↑</text>
+<text x="18" y="93" font-size="7" fill="#7a7a9a">--- início  </text><text x="63" y="93" font-size="7" fill="#1abc9c">— final (costas na parede)</text>
+</svg>`,
+
+rotExterna: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<rect x="145" y="8" width="7" height="78" rx="2" fill="#2e2e3d"/>
+<circle cx="62" cy="20" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="62" y1="27" x2="62" y2="62" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="62" y1="62" x2="50" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="62" y1="62" x2="74" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="62" y1="38" x2="62" y2="55" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="62" y1="55" x2="145" y2="55" stroke="#1abc9c" stroke-width="2.5"/>
+<circle cx="145" cy="55" r="4" fill="#1abc9c" opacity="0.9"/>
+<text x="88" y="46" font-size="8" fill="#1abc9c">← pressione</text>
+<text x="8" y="78" font-size="7" fill="#7a7a9a">Cotovelo ao lado · antebraço</text>
+<text x="8" y="88" font-size="7" fill="#7a7a9a">pressiona a parede (sem mover)</text>
+</svg>`,
+
+rotInterna: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<rect x="8" y="8" width="7" height="78" rx="2" fill="#2e2e3d"/>
+<circle cx="98" cy="20" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="98" y1="27" x2="98" y2="62" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="98" y1="62" x2="86" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="98" y1="62" x2="110" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="98" y1="38" x2="98" y2="55" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="98" y1="55" x2="15" y2="55" stroke="#1abc9c" stroke-width="2.5"/>
+<circle cx="15" cy="55" r="4" fill="#1abc9c" opacity="0.9"/>
+<text x="22" y="46" font-size="8" fill="#1abc9c">pressione →</text>
+<text x="30" y="78" font-size="7" fill="#7a7a9a">Cotovelo ao lado · antebraço</text>
+<text x="30" y="88" font-size="7" fill="#7a7a9a">pressiona a parede (sem mover)</text>
+</svg>`,
+
+isoAbducao: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<circle cx="48" cy="20" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="48" y1="27" x2="48" y2="65" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="48" y1="65" x2="36" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="48" y1="65" x2="60" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="48" y1="38" x2="138" y2="60" stroke="#1abc9c" stroke-width="2.5"/>
+<circle cx="140" cy="60" r="4" fill="#1abc9c" opacity="0.9"/>
+<path d="M48,38 Q70,35 80,38" fill="none" stroke="#7a7a9a" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="85" y="34" font-size="8" fill="#1abc9c">↑ pressione</text>
+<text x="60" y="78" font-size="7" fill="#7a7a9a">Braço abduzido 60–90°</text>
+<text x="60" y="88" font-size="7" fill="#7a7a9a">Pressione contra superfície</text>
+</svg>`,
+
+elevFrontal: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<circle cx="45" cy="22" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="45" y1="29" x2="45" y2="65" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="45" y1="65" x2="33" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="45" y1="65" x2="57" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="45" y1="40" x2="45" y2="60" stroke="#e8e8f0" stroke-width="1.5" opacity="0.3"/>
+<line x1="45" y1="40" x2="135" y2="40" stroke="#1abc9c" stroke-width="2.5"/>
+<circle cx="137" cy="40" r="4" fill="#1abc9c" opacity="0.9"/>
+<text x="80" y="33" font-size="8" fill="#1abc9c">→ até ~80°</text>
+<line x1="45" y1="40" x2="110" y2="18" stroke="#7a7a9a" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>
+<text x="112" y="16" font-size="7" fill="#7a7a9a">90° ✗</text>
+<text x="55" y="78" font-size="7" fill="#7a7a9a">Vista lateral. Pare antes de 90°.</text>
+<text x="55" y="88" font-size="7" fill="#7a7a9a">10% da carga anterior à lesão.</text>
+</svg>`,
+
+elevLateral: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="22" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="29" x2="80" y2="65" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="65" x2="68" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="65" x2="92" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="40" x2="44" y2="60" stroke="#7a7a9a" stroke-width="1.5" stroke-dasharray="3,2"/>
+<line x1="80" y1="40" x2="135" y2="58" stroke="#1abc9c" stroke-width="2.5"/>
+<circle cx="137" cy="58" r="4" fill="#1abc9c" opacity="0.9"/>
+<text x="100" y="48" font-size="8" fill="#1abc9c">60–90°</text>
+<text x="10" y="78" font-size="7" fill="#7a7a9a">Polegar para cima (pega neutra)</text>
+<text x="10" y="88" font-size="7" fill="#7a7a9a">Não ultrapasse 90°</text>
+</svg>`,
+
+yti: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<text x="22" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#1abc9c">Y</text>
+<circle cx="22" cy="28" r="5" fill="none" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="22" y1="33" x2="22" y2="52" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="22" y1="38" x2="10" y2="24" stroke="#1abc9c" stroke-width="2"/>
+<line x1="22" y1="38" x2="34" y2="24" stroke="#1abc9c" stroke-width="2"/>
+<text x="22" y="62" text-anchor="middle" font-size="6.5" fill="#7a7a9a">120°</text>
+<text x="80" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#1abc9c">T</text>
+<circle cx="80" cy="28" r="5" fill="none" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="80" y1="33" x2="80" y2="52" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="80" y1="38" x2="62" y2="38" stroke="#1abc9c" stroke-width="2"/>
+<line x1="80" y1="38" x2="98" y2="38" stroke="#1abc9c" stroke-width="2"/>
+<text x="80" y="62" text-anchor="middle" font-size="6.5" fill="#7a7a9a">90°</text>
+<text x="138" y="12" text-anchor="middle" font-size="9" font-weight="bold" fill="#1abc9c">I</text>
+<circle cx="138" cy="28" r="5" fill="none" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="138" y1="33" x2="138" y2="52" stroke="#e8e8f0" stroke-width="1.5"/>
+<line x1="138" y1="38" x2="138" y2="18" stroke="#1abc9c" stroke-width="2"/>
+<text x="138" y="62" text-anchor="middle" font-size="6.5" fill="#7a7a9a">acima</text>
+<line x1="0" y1="68" x2="160" y2="68" stroke="#2e2e3d" stroke-width="1"/>
+<text x="80" y="80" text-anchor="middle" font-size="7" fill="#7a7a9a">De bruços. Eleve braços em cada posição.</text>
+<text x="80" y="90" text-anchor="middle" font-size="7" fill="#7a7a9a">3 séries de 10 para cada letra.</text>
+</svg>`,
+
+supermanReab: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<line x1="5" y1="60" x2="155" y2="60" stroke="#2e2e3d" stroke-width="3"/>
+<text x="6" y="20" font-size="7.5" fill="#7a7a9a">Posição final ↓</text>
+<circle cx="128" cy="44" r="6" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="122" y1="44" x2="60" y2="44" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="60" y1="44" x2="25" y2="44" stroke="#1abc9c" stroke-width="2.5"/>
+<line x1="60" y1="44" x2="60" y2="58" stroke="#e8e8f0" stroke-width="1.5"/>
+<text x="12" y="40" font-size="8" fill="#1abc9c">→</text>
+<text x="15" y="75" font-size="7" fill="#1abc9c">Quadril fica no chão!</text>
+<text x="15" y="85" font-size="7" fill="#7a7a9a">Eleve só tronco e braços.</text>
+</svg>`,
+
+retracaoEsc: `<svg viewBox="0 0 160 95" xmlns="http://www.w3.org/2000/svg">
+<rect x="4" y="6" width="7" height="82" rx="2" fill="#2e2e3d"/>
+<circle cx="80" cy="22" r="7" fill="none" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="29" x2="80" y2="65" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="65" x2="68" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="65" x2="92" y2="88" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="40" x2="48" y2="40" stroke="#e8e8f0" stroke-width="2"/>
+<line x1="80" y1="40" x2="112" y2="40" stroke="#e8e8f0" stroke-width="2"/>
+<text x="30" y="35" font-size="11" fill="#1abc9c">←</text>
+<text x="108" y="35" font-size="11" fill="#1abc9c">→</text>
+<text x="16" y="60" font-size="7" fill="#7a7a9a">Costas na parede</text>
+<text x="16" y="72" font-size="7" fill="#7a7a9a">Aperte omoplatas contra a parede</text>
+<text x="16" y="84" font-size="7" fill="#1abc9c">Progressão a cada 4 semanas</text>
+</svg>`,
+};
+
 function renderExercise(cat, ex, container) {
   const card = document.createElement('div');
   card.className = 'exercise-card';
@@ -552,7 +855,13 @@ function renderExercise(cat, ex, container) {
   const doneCount = ex.sets.filter((_, i) => setsDone[`${ex.id}-${i}`]).length;
   const isMain  = ex.type === 'Principal';
   const isCore  = cat === 'core' && !isMain;
-  const badgeCls = isMain ? 'badge-main' : isCore ? 'badge-core' : 'badge-aux';
+  const isReab  = cat === 'reab';
+  const badgeCls = isMain ? 'badge-main' : isCore ? 'badge-core' : isReab ? 'badge-reab' : 'badge-aux';
+
+  const svg = EXERCISE_SVGS[ex.id];
+  const illustrationHtml = svg
+    ? `<div class="ex-illustration">${svg}<div class="ex-illustration-note">${ex.desc || ''}</div></div>`
+    : ex.desc ? `<div class="ex-desc-only">${ex.desc}</div>` : '';
 
   card.innerHTML = `
     <div class="ex-header" onclick="toggleEx('${ex.id}')">
@@ -562,6 +871,7 @@ function renderExercise(cat, ex, container) {
       <span class="ex-arrow">▼</span>
     </div>
     <div class="ex-body" id="exbody-${ex.id}">
+      ${illustrationHtml}
       ${ex.sets.map((s, i) => renderSetRow(ex, s, i)).join('')}
     </div>
   `;
@@ -756,9 +1066,9 @@ function renderMonitoring() {
   }
 
   let html = '';
-  const catNames    = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas', core: 'Core' };
-  const catColors   = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)', core: 'var(--orange)' };
-  const catBgColors = { pull: 'rgba(52,152,219,0.15)', push: 'rgba(232,48,78,0.15)', legs: 'rgba(46,204,113,0.15)', core: 'rgba(230,126,34,0.15)' };
+  const catNames    = { pull: 'Puxar', push: 'Empurrar', legs: 'Pernas', core: 'Core', reab: 'Reab.' };
+  const catColors   = { pull: 'var(--blue)', push: 'var(--accent2)', legs: 'var(--green)', core: 'var(--orange)', reab: 'var(--teal)' };
+  const catBgColors = { pull: 'rgba(52,152,219,0.15)', push: 'rgba(232,48,78,0.15)', legs: 'rgba(46,204,113,0.15)', core: 'rgba(230,126,34,0.15)', reab: 'rgba(26,188,156,0.15)' };
 
   for (const cat of ALL_CATS) {
     PLAN[cat].exercises.forEach(ex => {
